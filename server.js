@@ -12,6 +12,7 @@ const passport = require("passport");
 const cluster = require("cluster");
 const os = require("os");
 const numCors = os.cpus().length;
+const logger=require("./logger");
 
 const port = newArgs.port;
 
@@ -79,6 +80,7 @@ else {
   const mensajes = [];
 
   io.on('connection', socket => {
+    logger.info('Nuevo cliente conectado!')
     console.log('Nuevo cliente conectado!');
     socket.emit('mensajes', mensajes);
     socket.on('mensaje', data => {
@@ -89,12 +91,17 @@ else {
 
 
 
-  connection().then(() => console.log('Connected to Mongo')).catch(() => console.log('An error occurred trying to connect to mongo'));
+  connection().then(() => {console.log('Connected to Mongo'); logger.info('Connected to Mongo')}).catch(() => {console.log('An error occurred trying to connect to mongo'),logger.warn('An error occurred trying to connect to mongo')});
 
   const srv = server.listen(port, () => {
+    logger.info("Conexion exitosa al servidor")
     console.log(`Escuchando app en el puerto ${srv.address().port} sobre el proceso ${process.pid} en modo ${newArgs.mode}`);
   });
 
-  srv.on('error', error => console.log(`Error en servidor ${error}`))
+  srv.on('error', error => {console.log(`Error en servidor ${error}`), logger.warn('Error en el servidor')})
 
-}
+  app.get("*", async (req, res) => {
+    logger.warn("No existe la pagina solicitada")
+    return res.status(400).send({error: `An error occurred `});
+  });
+} 

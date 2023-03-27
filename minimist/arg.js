@@ -11,7 +11,6 @@ const args=ParsedArgs(arguments, {
         m:"FORK"
     }
 });
-//console.log(args);
 const {port, mode}= args;
 const newArgs= {port, mode};
 module.exports=newArgs

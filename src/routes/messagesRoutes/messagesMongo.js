@@ -16,7 +16,7 @@ chatInMongo.post("/messages", express.json(), async (req, res) => {
         return res.status(200).send(message);
       } catch (error) {
         return res.status(400).send({
-          error: `An error occurred trying to read products ${error.message}`,
+          error: `An error occurred trying to read messages ${error.message}`,
         });
       }
     });
